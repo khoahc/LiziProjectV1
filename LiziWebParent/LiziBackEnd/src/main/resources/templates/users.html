@@ -87,7 +87,10 @@
 			<tbody>
 				<tr th:each="user : ${listUsers}">
 					<td>[[${user.id}]]</td>
-					<td><span class="fa-solid fa-image-portrait fa-2x icon-silver"></span></td>
+					<td>
+						<span th:if="${user.photos == null}" class="fa-solid fa-image-portrait fa-3x icon-silver"></span>
+						<img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px"/>
+					</td>
 					<td>[[${user.email}]]</td>
 					<td>[[${user.firstName}]]</td>
 					<td>[[${user.lastName}]]</td>
@@ -112,6 +115,39 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+	
+	<div class="text-center m-2" th:if="${totalItems > 0}">
+		<span>Thông tin người dùng [[${startCount}]] đến [[${endCount}]] của [[${totalItems}]] người dùng</span>
+	</div>	
+	<div class="text-center m-2" th:if="${totalItems <= 0}">
+		<span>Không có người dùng nào</span>
+	</div>
+	
+	<div>
+		<nav>
+		  <ul class="pagination justify-content-center">
+		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		  		<a class="page-link" th:href="@{/users/page/1}">Trang đầu</a>
+		  	</li>
+		  	
+		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+		  		<a class="page-link" th:href="@{'/users/page/' + ${currentPage - 1}}">Trước</a>
+		  	</li>
+		  	
+		    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}" 
+		    	th:each="i : ${#numbers.sequence(1, totalPages)}">
+		    	<a class="page-link" th:href="@{'/users/page/' + ${i}}">[[${i}]]</a>
+		    </li>		    
+		    
+		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    	<a class="page-link" th:href="@{'/users/page/' + ${currentPage + 1}}">Sau</a>
+		    </li>
+		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+		    	<a class="page-link" th:href="@{'/users/page/' + ${totalPages}}">Trang cuối</a>
+		    </li>
+		  </ul>
+		</nav>																
 	</div>
 	
 	<div class="modal fade text-center" id="confirmModal">
