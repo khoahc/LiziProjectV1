@@ -68,70 +68,31 @@
 	<div th:if="${message != null}" class="alert alert-success text-center">
 		[[${message}]]
 	</div>
+	
+	<form th:action="@{/users/page/1}" class="form-inline m-3">
+		<input type="hidden" name="sortField" th:value="${sortField}"/>
+		<input type="hidden" name="sortDir" th:value="${sortDir}"/>
 		
+		Tìm kiếm:&nbsp;
+		<input type="search" name="keyword" th:value="${keyword}" class="form-control mb-3" required/>
+		
+		<input type="submit" value="Tìm" class="btn btn-primary"/>
+		&nbsp;
+		<input type="button" value="Xóa" class="btn btn-danger" onclick="clearFilter()"/>		
+		&nbsp;
+	</form>
+	
 	<div class="table-responsive-xl">
 		<table class="table table-bordered table-striped table-hover">
 			<thead class="table-dark">
 				<tr>
-					<th>Id người dùng</th>				
-					<th>Hình ảnh</th>
-					<th>E-mail</th>					
-					<th>
-						<a th:if="${sortField != 'firstName'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=firstName' + '&sortDir=' + ${sortDir}}">
-							Tên
-						</a>			
-						<a th:if="${sortField == 'firstName'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=firstName' + '&sortDir=' + ${reverseSortDir}}">
-							Tên
-						</a>		
-									
-						<span th:if="${sortField == 'firstName'}"
-							th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">							
-						</span>						
-					</th>				
-					<th>
-						<a th:if="${sortField != 'lastName'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=lastName' + '&sortDir=' + ${sortDir}}">
-							Họ
-						</a>			
-						<a th:if="${sortField == 'lastName'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=lastName' + '&sortDir=' + ${reverseSortDir}}">
-							Họ
-						</a>		
-									
-						<span th:if="${sortField == 'lastName'}"
-							th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">							
-						</span>
-					</th>			
-					<th>
-						<a th:if="${sortField != 'roles'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=roles' + '&sortDir=' + ${sortDir}}">
-							Vai trò
-						</a>			
-						<a th:if="${sortField == 'roles'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=roles' + '&sortDir=' + ${reverseSortDir}}">
-							Vai trò
-						</a>		
-									
-						<span th:if="${sortField == 'roles'}"
-							th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">							
-						</span>
-					</th>				
-					<th>
-						<a th:if="${sortField != 'enabled'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=enabled' + '&sortDir=' + ${sortDir}}">
-							Trạng thái
-						</a>			
-						<a th:if="${sortField == 'enabled'}" class="text-white text-decoration-none"
-							th:href="@{'/users/page/' + ${currentPage} + '?sortField=enabled' + '&sortDir=' + ${reverseSortDir}}">
-							Trạng thái
-						</a>		
-									
-						<span th:if="${sortField == 'enabled'}"
-							th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">							
-						</span>
-					</th>	
+					<th th:replace="fragments :: column_link('id', 'ID')" />
+					<th>Hình ảnh</th>	
+					<th th:replace="fragments :: column_link('email', 'Email')" />
+					<th th:replace="fragments :: column_link('firstName', 'Tên')" />					
+					<th th:replace="fragments :: column_link('lastName', 'Họ')" />														
+					<th>Vai trò</th>				
+					<th th:replace="fragments :: column_link('enabled', 'Trạng thái')" />																						
 					<th></th>				
 				</tr>
 			</thead>
@@ -156,7 +117,7 @@
 							title="Kích hoạt tài khoản"></a>
 					</td>
 					<td>
-						<a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'users/edit/' + ${user.id}}" 
+						<a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}" 
 							title="Chỉnh sửa thông tin"></a>
 						&nbsp;
 						<a class="fa-solid fa-trash fa-2x icon-red link-delete" 
@@ -176,27 +137,27 @@
 		<span>Không có người dùng nào</span>
 	</div>
 	
-	<div>
+	<div th:if="${totalPages} > 1">
 		<nav>
 		  <ul class="pagination justify-content-center">
-		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		  		<a class="page-link" th:href="@{'/users/page/1?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Trang đầu</a>
+		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">		  		
+		  		<a th:replace="fragments :: page_link(1, 'Trang đầu')"></a>
 		  	</li>
  		  	
 		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		  		<a class="page-link" th:href="@{'/users/page/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Trước</a>
+		  		<a th:replace="fragments :: page_link(${currentPage - 1}, 'Trước')"></a>
 		  	</li>
 		  	
 		    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}" 
 		    	th:each="i : ${#numbers.sequence(1, totalPages)}">
-		    	<a class="page-link" th:href="@{'/users/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+				<a th:replace="fragments :: page_link(${i}, ${i})"></a>		    
 		    </li>		    
 		    
 		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    	<a class="page-link" th:href="@{'/users/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Sau</a>
+		    	<a th:replace="fragments :: page_link(${currentPage + 1}, 'Sau')"></a>		    
 		    </li>
 		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    	<a class="page-link" th:href="@{'/users/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Trang cuối</a>
+		    	<a th:replace="fragments :: page_link(${totalPages}, 'Trang cuối')"></a>
 		    </li>
 		  </ul>
 		</nav>																
@@ -235,8 +196,12 @@
 				$("#yesButton").attr("href", link.attr("href"));
 				$("#confirmText").text("Bạn có muốn xóa người dùng có ID: " + userId + " không?");
 				$("#confirmModal").modal('show');
-			})
-		})
+			});
+		});
+		
+		function clearFilter(){
+			window.location = "[[@{/users}]]";
+		}
 	</script>
 	
 </body>
