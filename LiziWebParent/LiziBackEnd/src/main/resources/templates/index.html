@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="with=device-width, initial-scale=1.0, minimum-scale=1.0">
 	<title>Home - Lizi Admin</title>
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>	
+	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />		
 	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}" ></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" ></script>
+	<script th:src="@{https://kit.fontawesome.com/6aca6ae746.js}" crossorigin="anonymous"></script>
+	
 </head>
 <body class="container-fluid">
 	<div>
+		<form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+			<input type="submit" />
+		</form>
+		
 		<nav class="navbar navbar-expand-lg bg-info navbar-dark">
 			<a class="navbar-brand" th:href="@{/}">
 				<img alt="LIZI logo" th:src="@{/images/lizi-logo.png}">
@@ -53,6 +61,18 @@
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/setting}">Cài đặt</a>
 			 		</li>
+			 		<li>
+				 		<span class="fas fa-user fa-2x icon-white"></span>				 		
+			 		</li>
+			 		<li class="nav-item dropdown">
+				 		<a class="nav-link text-white dropdown-toggle" 
+				 			id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+				 			sec:authentication="principal.fullname">
+				 		</a>
+				 		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				 			<a class="dropdown-item" id="logoutLink" href="">Đăng xuất</a>
+				 		</div>
+			 		</li>
 			 	</ul>
 			</div>
 		</nav>
@@ -61,5 +81,14 @@
 	<div>
 		<p>Lizi Control Panel Copyright &copy; Lizi</p>
 	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#logoutLink").on("click", function(e){
+				e.preventDefault();
+				document.logoutForm.submit(); 
+			});
+		});
+	</script>
 </body>
 </html>

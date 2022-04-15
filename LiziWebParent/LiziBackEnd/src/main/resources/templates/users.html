@@ -62,106 +62,98 @@
 	
 	<div>
 		<h2>Quản lý người dùng</h2>
-		<a th:href="@{/users/new}">Tạo</a>
+		<a th:href="@{/users/new}"> <i class="fa-solid fa-user-plus fa-2x icon-dark"></i></a>
+		&nbsp;|&nbsp;
+		<a th:href="@{/users/export/excel}"><i class="fa-solid fa-file-excel fa-2x icon-dark"></i></a>
 	</div>
 	
 	<div th:if="${message != null}" class="alert alert-success text-center">
 		[[${message}]]
 	</div>
 	
-	<form th:action="@{/users/page/1}" class="form-inline m-3">
+	<form th:action="@{/users/page/1}" class="form-inline m-3 input-group m-50 w-50">
 		<input type="hidden" name="sortField" th:value="${sortField}"/>
 		<input type="hidden" name="sortDir" th:value="${sortDir}"/>
 		
-		Tìm kiếm:&nbsp;
-		<input type="search" name="keyword" th:value="${keyword}" class="form-control mb-3" required/>
-		
-		<input type="submit" value="Tìm" class="btn btn-primary"/>
-		&nbsp;
-		<input type="button" value="Xóa" class="btn btn-danger" onclick="clearFilter()"/>		
-		&nbsp;
+		Tìm kiếm&nbsp;
+		<input type="search" name="keyword" th:value="${keyword}" class="form-control mx-3" required/>
+		<div class="input-group-append">
+			<button type="submit" class="btn btn-primary">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+			&nbsp;
+			<button type="button" class="btn btn-danger" onclick="clearFilter()">			
+				<i class="fa-solid fa-eraser"></i>
+			</button>		
+			&nbsp;
+		</div>
 	</form>
 	
-	<div class="table-responsive-xl">
+	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover">
 			<thead class="table-dark">
-				<tr>
-					<th th:replace="fragments :: column_link('id', 'ID')" />
-					<th>Hình ảnh</th>	
-					<th th:replace="fragments :: column_link('email', 'Email')" />
-					<th th:replace="fragments :: column_link('firstName', 'Tên')" />					
-					<th th:replace="fragments :: column_link('lastName', 'Họ')" />														
-					<th>Vai trò</th>				
-					<th th:replace="fragments :: column_link('enabled', 'Trạng thái')" />																						
-					<th></th>				
+				<tr>									
+					<th class="hideable-column">
+						<th th:replace="fragments :: column_link('id', 'ID', 'tag')" />
+					</th>					
+					<th>Hình ảnh</th>					
+					<th class="hideable-column">
+						<th th:replace="fragments :: column_link('email', 'Email', 'tag')" />	
+					</th>							
+					<th th:replace="fragments :: column_link('firstName', 'Tên', 'none')" />
+					<th th:replace="fragments :: column_link('lastName', 'Họ', 'none')" />					
+					<th>Vai trò</th>
+					<th th:replace="fragments :: column_link('enabled', 'Trạng thái', 'none')" />
+					<th></th>			
 				</tr>
 			</thead>
 			
 			<tbody>
-				<tr th:each="user : ${listUsers}">
-					<td>[[${user.id}]]</td>
+				<tr th:each="user : ${listUsers}">										
+					<td class="hideable-column">[[${user.id}]]</td>
 					<td>
-						<span th:if="${user.photos == null}" class="fa-solid fa-image-portrait fa-3x icon-silver"></span>
-						<img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px"/>
+						<div th:replace="fragments :: user_photos" />
 					</td>
-					<td>[[${user.email}]]</td>
+					<td class="hideable-column">[[${user.email}]]</td>
 					<td>[[${user.firstName}]]</td>
 					<td>[[${user.lastName}]]</td>
 					<td>[[${user.roles}]]</td>
+					
 					<td>
-						<a th:if="${user.enabled == true}" class="fa-solid fa-circle-check fa-2x icon-green"
-							th:href="@{'/users/' + ${user.id} + '/enabled/false'}"
-							title="Vô hiệu hóa tài khoản"></a>
-						<a th:if="${user.enabled == false}" class="fa-solid fa-circle fa-2x icon-dark"
-							th:href="@{'/users/' + ${user.id} + '/enabled/true'}"
-							title="Kích hoạt tài khoản"></a>
+						<div th:replace="fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})" />
 					</td>
+					
 					<td>
-						<a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}" 
-							title="Chỉnh sửa thông tin"></a>
-						&nbsp;
-						<a class="fa-solid fa-trash fa-2x icon-red link-delete" 
-							th:href="@{'users/delete/' + ${user.id}}"
-							th:userId="${user.id}"
-							title="Xóa"></a>
+						<div th:replace="fragments :: edit('user', '/users/edit/' + ${user.id})" />
+						&nbsp;&nbsp;
+						<div th:replace="fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)" />
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 	
-	<div class="text-center m-2" th:if="${totalItems > 0}">
-		<span>Thông tin người dùng [[${startCount}]] đến [[${endCount}]] của [[${totalItems}]] người dùng</span>
-	</div>	
-	<div class="text-center m-2" th:if="${totalItems <= 0}">
-		<span>Không có người dùng nào</span>
+	<div class="less-details">
+		<div th:each="user : ${listUsers}" class="row m-1">
+			<div class="col-4">
+				<div th:replace="fragments :: user_photos" ></div>		
+			</div>
+			<div class="col-8">
+				<div>[[${user.fullName}]]</div>
+				<div>[[${user.roles}]]</div>
+				<div class="mt-2">
+					<div th:replace="fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})"></div>
+					&nbsp; 			
+					<div th:replace="fragments :: edit('user', '/users/edit/' + ${user.id})"></div>
+					&nbsp; 
+					<div th:replace="fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)"></div>
+				</div>
+			</div>
+			<div>&nbsp;</div>
+		</div>
 	</div>
 	
-	<div th:if="${totalPages} > 1">
-		<nav>
-		  <ul class="pagination justify-content-center">
-		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">		  		
-		  		<a th:replace="fragments :: page_link(1, 'Trang đầu')"></a>
-		  	</li>
- 		  	
-		  	<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		  		<a th:replace="fragments :: page_link(${currentPage - 1}, 'Trước')"></a>
-		  	</li>
-		  	
-		    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}" 
-		    	th:each="i : ${#numbers.sequence(1, totalPages)}">
-				<a th:replace="fragments :: page_link(${i}, ${i})"></a>		    
-		    </li>		    
-		    
-		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    	<a th:replace="fragments :: page_link(${currentPage + 1}, 'Sau')"></a>		    
-		    </li>
-		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    	<a th:replace="fragments :: page_link(${totalPages}, 'Trang cuối')"></a>
-		    </li>
-		  </ul>
-		</nav>																
-	</div>
+	<div th:replace="fragments :: pagination('users')"></div>	
 	
 	<div class="modal fade text-center" id="confirmModal">
 		<div class="modal-dialog">
