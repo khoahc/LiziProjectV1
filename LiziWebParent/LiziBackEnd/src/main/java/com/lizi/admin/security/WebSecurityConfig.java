@@ -1,5 +1,6 @@
 package com.lizi.admin.security;
 
+import org.aspectj.weaver.ast.And;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -48,7 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.loginPage("/login")
 			.usernameParameter("email")
 			.permitAll()
-		.and().logout().permitAll();
+		.and().logout().permitAll()
+		.and()
+			.rememberMe()
+				.key("ABCKHOAXYZ_0123456789")			
+				.tokenValiditySeconds(7 * 24 * 60 * 60);	//set the token validity expiration time (seconds)
 		
 	}
 
