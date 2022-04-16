@@ -17,39 +17,61 @@
 			</button>
 			<div class="collapse navbar-collapse" id="topNavbar">
 			 	<ul class="navbar-nav">
+			 		<th:block sec:authorize="hasAuthority('Admin')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/users}">Người dùng</a>
 			 		</li>
+			 		</th:block>
+			 		
+			 		<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/categories}">Loại sản phẩm</a>
-			 		</li>
+			 		</li>			 		
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/brands}">Thương hiệu</a>
 			 		</li>
+			 		</th:block>
+			 		
+			 		<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Editor', 'Shipper')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/products}">Sản phẩm</a>
 			 		</li>
+			 		</th:block>
+			 		
+			 		<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/customers}">Khách hàng</a>
-			 		</li>
+			 		</li>			 		
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/shipping}">Vận chuyển</a>
-			 		</li>
+			 		</li>			 		
+			 		</th:block>
+			 		
+			 		<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/orders}">Đơn đặt hàng</a>
 			 		</li>
+			 		</th:block>
+			 		
+			 		<th:block sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/report}">Báo cáo bán hàng</a>
 			 		</li>
+			 		</th:block>
+			 		
+			 		<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/articles}">Quản lý bài viết</a>
 			 		</li>
 			 		<li class="nav-item">
 				 		<a class="nav-link text-white" th:href="@{/menus}">Doanh mục</a>
 			 		</li>
-			 		<li class="nav-item">
+			 		</th:block>
+			 		
+			 		<li class="nav-item" sec:authorize="hasAuthority('Admin')">
 				 		<a class="nav-link text-white" th:href="@{/setting}">Cài đặt</a>
 			 		</li>
+			 		
 			 		<li>
 				 		<span class="fas fa-user fa-2x icon-white"></span>				 		
 			 		</li>

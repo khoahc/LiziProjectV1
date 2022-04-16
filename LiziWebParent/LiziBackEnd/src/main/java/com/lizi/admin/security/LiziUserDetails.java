@@ -29,7 +29,7 @@ public class LiziUserDetails implements UserDetails {
 			authories.add(new SimpleGrantedAuthority(role.getName()));
 		}
 				
-		return null;
+		return authories;
 	}
 
 	@Override
