@@ -1,4 +1,4 @@
-package com.lizi.admin.user;
+package com.lizi.admin.user.export;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -12,6 +12,8 @@ import java.util.List;
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+
+import com.lizi.admin.user.AbstractExporter;
 import com.lizi.common.entity.User;
 
 public class UserExcelExporter extends AbstractExporter{

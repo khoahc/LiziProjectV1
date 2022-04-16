@@ -27,10 +27,14 @@ public class UserService {
 	private RoleRepository roleRepo;
 	
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;	
 	
 	public List<User> listAll(){			
 		return (List<User>) userRepo.findAll();
+	}
+	
+	public User getUserByEmail(String email){			
+		return userRepo.getUserByEmail(email);
 	}
 	
 	public Page<User> listByPage(int pageNumber, String sortField, String sortDir, String keyword){
@@ -67,6 +71,24 @@ public class UserService {
 		}
 		
 		return userRepo.save(user);
+	}
+	
+	public User updateAccount(User userInForm) {
+		User userInDB = userRepo.findById(userInForm.getId()).get();
+		
+		if(!userInForm.getPassword().isEmpty()) {
+			userInDB.setPassword(userInForm.getPassword());
+			encodePassword(userInDB);
+		}
+		
+		if(userInForm.getPhotos() != null) {
+			userInDB.setPhotos(userInForm.getPhotos());
+		}
+		
+		userInDB.setFirstName(userInForm.getFirstName());
+		userInDB.setLastName(userInForm.getLastName());
+		
+		return userRepo.save(userInDB);		
 	}
 	
 	public void encodePassword(User user) {

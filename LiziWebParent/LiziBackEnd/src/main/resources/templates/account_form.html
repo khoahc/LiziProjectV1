@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments :: page_head(${pageTitle})"/>
+<head th:replace="fragments :: page_head('Thông tin tài khoản')"/>
 <body class="container-fluid">
 
 	<div th:replace="navigation :: menu"></div>
-
-	<div>
-		<h2>Quản lý người dùng | [[${pageTitle}]]</h2>		
-	</div>	
 	
-	<form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto"
+	<form th:action="@{/account/update}" method="post" style="max-width: 700px; margin: 0 auto"
 		enctype="multipart/form-data"
-		th:object="${user}" onsubmit="return checkEmailUnique(this)">
+		th:object="${user}">
+		<div class="text-center">
+			<h2>Thông tin tài khoản của bạn</h2>		
+		</div>
+		
+		<div th:if="${message != null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>
+		
 		<input type="hidden" th:field="*{id}"/>
 		<div class="border border-secondary rounded p-3">
 			<div class="form-group row mb-2" >
 				<label class="col-sm-4 col-form-label">E-mail</label>
 				<div class="col-sm-8">
 					<input type="email" class="form-control" th:field="*{email}" 
-						required minlength="8" maxlength="128"/>
+						readonly/>
 				</div>
 			</div>
 			
@@ -37,43 +41,41 @@
 					<input type="text" class="form-control" th:field="*{lastName}" 
 						required minlength="2" maxlength="40"/>
 				</div>
-			</div>
+			</div>			
 			
-			<div class="form-group row mb-2" >
-				<label class="col-sm-4 col-form-label">Mật khẩu</label>
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label mb-2">Mật khẩu mới</label>
 				<div class="col-sm-8">
-					<input th:if="${user.id == null}" type="password" class="form-control" th:field="*{password}" 
-						required minlength="3" maxlength="64"/>
-					<input th:if="${user.id != null}" type="password" class="form-control" th:field="*{password}" 
-						minlength="3" maxlength="64"/>
+					<input type="password" th:field="*{password}" class="form-control"
+						placeholder="Để trống nếu bạn không muốn đổi mật khẩu"
+						minlength="8" maxlength="20"
+						oninput="checkPasswordMatch(document.getElementById('confirmPassword'))"
+					/>
 				</div>
 			</div>
+			
+			<div class="form-group row">
+				<label class="col-sm-4 col-form-label mb-2">Nhập lại mật khẩu mới</label>
+				<div class="col-sm-8">
+					<input type="password" id="confirmPassword" class="form-control"
+						minlength="8" maxlength="20"
+						oninput="checkPasswordMatch(this)"
+					/>
+				</div>
+			</div>		
 			
 			<div class="form-group row mb-2" >
 				<label class="col-sm-4 col-form-label">Quyền</label>
 				<div class="col-sm-8">
-					<th:block th:each="role: ${listRoles}">
-						<input type="checkbox" th:field="*{roles}"
-							th:text="${role.name}" th:value="${role.id}" class="m-2"/>
-						- <small>[[${role.description}]]</small>
-						</br>
-					</th:block>
+					<span><b>[[${user.roles}]]</b></span>
 				</div>
-			</div>
-			
-			<div class="form-group row mb-2" >
-				<label class="col-sm-4 col-form-label">Trạng thái</label>
-				<div class="col-sm-8">
-					<input type="checkbox" th:field="*{enabled}"/>
-				</div>
-			</div>
-			
+			</div>		
 			<div class="form-group row mb-2" >
 				<label class="col-sm-4 col-form-label">Hình ảnh</label>
 				<div class="col-sm-8">
 					<input type="hidden" th:field="*{photos}"/>
 					<input type="file" id="fileImage" class="mb-2" name="image" accept="image/img, image/jpeg, image/png"/>
-					<img id="thumbnail" class="img-fluid" alt="Ảnh đại diện" th:src="@{${user.photosImagePath}}" />
+					<img id="thumbnail" class="img-fluid" alt="Hình ảnh đại diện" th:src="@{${user.photosImagePath}}" />
 				</div>
 			</div>
 			
@@ -135,33 +137,13 @@
 			render.readAsDataURL(file);
 		}		
 		
-		function checkEmailUnique(form){
-			url = "[[@{/users/check-email}]]";
-			userEmail = $("#email").val();
-			userId = $("#id").val();				
-			csrfValue = $("input[name='_csrf']").val();
-			params = {id: userId, email: userEmail, _csrf: csrfValue};
-			
-			$.post(url, params, function(response) {
-				if(response == "OK"){
-					form.submit();					
-				} else if (response == "Duplicated") {
-					showModalDialog("Cảnh báo", "Email " + userEmail + " đã tồn tại");				
-				} else {
-					showModalDialog("Lỗi", "Phản hồi không xác định từ máy chủ");
-				}
-			}).fail(function(){
-				showModalDialog("Lỗi", "Không thể kết nối tới máy chủ");
-			});
-			
-			return false;
-		}
-		
-		function showModalDialog(title, message){
-			$("#modalTitle").text(title);			
-			$("#modalBody").text(message);
-			$("#modalDialog").modal('show');
-		}
+		function checkPasswordMatch(confirmPassword) {
+			if (confirmPassword.value != $("#password").val()) {
+				confirmPassword.setCustomValidity("Mật khẩu xác nhận không khớp!");
+			} else {
+				confirmPassword.setCustomValidity("");
+			}
+		}			
 	</script>
 </body>
 
