@@ -1,4 +1,4 @@
-package com.lizi.admin.user;
+package com.lizi.admin.user.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lizi.admin.FileUploadUtil;
+import com.lizi.admin.user.UserNotFoundException;
+import com.lizi.admin.user.UserService;
 import com.lizi.admin.user.export.UserExcelExporter;
 import com.lizi.common.entity.Role;
 import com.lizi.common.entity.User;
@@ -71,7 +73,7 @@ public class UserController {
 		model.addAttribute("reverseSortDir", reverseSortDir);
 		model.addAttribute("keyword", keyword);		
 		
-		return "users";
+		return "users/users";
 	}
 	
 	@GetMapping("/users/new")
@@ -83,7 +85,7 @@ public class UserController {
 		model.addAttribute("user", user);
 		model.addAttribute("listRoles", listRoles);
 		model.addAttribute("pageTitle", "Tạo người dùng");
-		return "user_form";
+		return "users/user_form";
 	}
 	
 	@PostMapping("/users/save")
@@ -128,7 +130,7 @@ public class UserController {
 			model.addAttribute("user", user);
 			model.addAttribute("listRoles", listRoles);
 			model.addAttribute("pageTitle", "Sửa người dùng (ID: " + id + ")");
-			return "user_form"; 
+			return "users/user_form"; 
 		} catch (UserNotFoundException e) {
 			redirectAttributes.addFlashAttribute("message", e.getMessage());
 			return "redirect:/users";

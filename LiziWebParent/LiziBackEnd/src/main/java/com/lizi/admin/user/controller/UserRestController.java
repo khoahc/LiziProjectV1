@@ -1,9 +1,11 @@
-package com.lizi.admin.user;
+package com.lizi.admin.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.lizi.admin.user.UserService;
 
 @RestController
 public class UserRestController {

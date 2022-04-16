@@ -1,4 +1,4 @@
-package com.lizi.admin.user;
+package com.lizi.admin.user.controller;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lizi.admin.FileUploadUtil;
 import com.lizi.admin.security.LiziUserDetails;
+import com.lizi.admin.user.UserService;
 import com.lizi.common.entity.User;
 
 @Controller
@@ -30,7 +31,7 @@ public class AccountController {
 		User user = service.getUserByEmail(email);
 		model.addAttribute("user", user);
 		
-		return "account_form";
+		return "users/account_form";
 	}
 	
 	@PostMapping("/account/update")
