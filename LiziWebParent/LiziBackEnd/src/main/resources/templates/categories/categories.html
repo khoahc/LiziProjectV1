@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head('Người dùng - Lizi Admin')"/>
+<head th:replace="fragments :: page_head('Loại sản phẩm - Lizi Admin')"/>
 <body class="container-fluid">
 
 	<div th:replace="navigation :: menu"></div>
 
 	<div>
-		<h2>Quản lý người dùng</h2>
-		<a th:href="@{/users/new}"> <i class="fa-solid fa-user-plus fa-2x icon-dark"></i></a>
+		<h2>Quản lý loại sản phẩm</h2>
+		<a th:href="@{/categories/new}"> <i class="fa-solid fa-user-plus fa-2x icon-dark"></i></a>
 		&nbsp;|&nbsp;
-		<a th:href="@{/users/export/excel}"><i class="fa-solid fa-file-excel fa-2x icon-dark"></i></a>
+		<a th:href="@{/categories/export/excel}"><i class="fa-solid fa-file-excel fa-2x icon-dark"></i></a>
 	</div>
 	
 	<div th:if="${message != null}" class="alert alert-success text-center">
@@ -43,35 +43,31 @@
 					</th>					
 					<th>Hình ảnh</th>					
 					<th class="hideable-column">
-						<th th:replace="fragments :: column_link('email', 'Email', 'tag')" />	
+						<th th:replace="fragments :: column_link('name', 'Tên loại sản phẩm', 'tag')" />	
 					</th>							
-					<th th:replace="fragments :: column_link('firstName', 'Tên', 'none')" />
-					<th th:replace="fragments :: column_link('lastName', 'Họ', 'none')" />					
-					<th>Vai trò</th>
+					<th th:replace="fragments :: column_link('alias', 'Tên gọi tắt', 'none')" />
 					<th th:replace="fragments :: column_link('enabled', 'Trạng thái', 'none')" />
 					<th></th>			
 				</tr>
 			</thead>
 			
 			<tbody>
-				<tr th:each="user : ${listUsers}">										
-					<td class="hideable-column">[[${user.id}]]</td>
+				<tr th:each="category : ${listCategories}">										
+					<td class="hideable-column">[[${category.id}]]</td>
 					<td>
-						<div th:replace="fragments :: user_photos" />
+						<img th:src="@{${category.image}}" style="width: 100px" class="img-fluid"/>
 					</td>
-					<td class="hideable-column">[[${user.email}]]</td>
-					<td>[[${user.firstName}]]</td>
-					<td>[[${user.lastName}]]</td>
-					<td>[[${user.roles}]]</td>
+					<td class="hideable-column">[[${category.name}]]</td>
+					<td>[[${category.alias}]]</td>
 					
 					<td>
-						<div th:replace="fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})" />
+						<div th:replace="fragments :: status(${category.enabled}, 'category', '/categories/' + ${category.id})" />
 					</td>
 					
 					<td>
-						<div th:replace="fragments :: edit('user', '/users/edit/' + ${user.id})" />
+						<div th:replace="fragments :: edit('category', '/categories/edit/' + ${category.id})" />
 						&nbsp;&nbsp;
-						<div th:replace="fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)" />
+						<div th:replace="fragments :: delete('category', ${category.id}, '/categories/delete/' + ${category.id}, true)" />
 					</td>
 				</tr>
 			</tbody>
@@ -79,26 +75,25 @@
 	</div>
 	
 	<div class="less-details">
-		<div th:each="user : ${listUsers}" class="row m-1">
+		<div th:each="category : ${listCategories}" class="row m-1">
 			<div class="col-4">
-				<div th:replace="fragments :: user_photos" ></div>		
+				<img th:src="@{${category.image}}" style="width: 100px" class="img-fluid"/>
 			</div>
 			<div class="col-8">
-				<div>[[${user.fullName}]]</div>
-				<div>[[${user.roles}]]</div>
+				<div>[[${category.name}]]</div>				
 				<div class="mt-2">
-					<div th:replace="fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})"></div>
+					<div th:replace="fragments :: status(${category.enabled}, 'category', '/categories/' + ${category.id})"></div>
 					&nbsp; 			
-					<div th:replace="fragments :: edit('user', '/users/edit/' + ${user.id})"></div>
+					<div th:replace="fragments :: edit('category', '/categories/edit/' + ${category.id})"></div>
 					&nbsp; 
-					<div th:replace="fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)"></div>
+					<div th:replace="fragments :: delete('category', ${category.id}, '/users/delete/' + ${category.id}, true)"></div>
 				</div>
 			</div>
 			<div>&nbsp;</div>
 		</div>
 	</div>
 	
-	<div th:replace="fragments :: pagination('users')"></div>	
+	<div th:replace="fragments :: pagination('categories')"></div>	
 	
 	<div class="modal fade text-center" id="confirmModal">
 		<div class="modal-dialog">
@@ -122,22 +117,23 @@
 		
 	<div th:replace="fragments :: footer"></div>
 	
+	<script th:src="@{/js/common.js}"></script>
 	<script type="text/javascript">
-		moduleURL = "[[@{/users}]]";
+		moduleURL = "[[@{/categories}]]";
 		
 		$(document).ready(function(){
 			$(".link-delete").on("click", function(e) {
 				e.preventDefault();
 				link = $(this);
-				userId = link.attr("userId");
+				userId = link.attr("categoryId");
 				$("#yesButton").attr("href", link.attr("href"));
-				$("#confirmText").text("Bạn có muốn xóa người dùng có ID: " + userId + " không?");
+				$("#confirmText").text("Bạn có muốn xóa loại sản phẩm có ID: " + categoryId + " không?");
 				$("#confirmModal").modal('show');
 			});
 		});
 		
 		function clearFilter(){
-			window.location = moduleURL;
+			window.location = "[[@{/users}]]";
 		}
 	</script>
 	
