@@ -2,8 +2,6 @@ package com.lizi.admin.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -88,8 +86,6 @@ public class CategoryRepositoryTests {
 			
 			printChildren(subCategory, newSubLevel);
 			
-		}
-		
-		
+		}				
 	}
 }

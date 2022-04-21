@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: page_head(${pageTitle})"/>
+<body class="container-fluid">
+
+	<div th:replace="navigation :: menu"></div>
+
+	<div>
+		<h2>Quản lý loại sản phẩm | [[${pageTitle}]]</h2>		
+	</div>	
+
+	<div th:if="${message != null}" class="alert alert-success text-center">
+		[[${message}]]
+	</div>
+	
+	<form th:action="@{/categories/save}" method="post" style="max-width: 700px; margin: 0 auto"
+		enctype="multipart/form-data"
+		th:object="${category}" >
+		<input type="hidden" th:field="*{id}"/>
+		<div class="border border-secondary rounded p-3">
+			<div class="form-group row mb-2" >
+				<label class="col-sm-4 col-form-label">Tên loại sản phẩm</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" th:field="*{name}" 
+						required minlength="2" maxlength="128"/>
+				</div>
+			</div>
+			
+			<div class="form-group row mb-2" >
+				<label class="col-sm-4 col-form-label">Tên gọi tắt</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" th:field="*{alias}" 
+						required minlength="2" maxlength="64"/>
+				</div>
+			</div>		
+			
+			<div class="form-group row mb-2" >
+				<label class="col-sm-4 col-form-label">Loại sản phẩm cha</label>
+				<div class="col-sm-8">
+					<select class="form-control" th:field="*{parent}">
+						<option value="0">Không có</option>
+						
+						<th:block th:each="category : ${listCategories}">
+							<option th:value="${category.id}">[[${category.name}]]</option>
+						</th:block>
+					</select>
+				</div>
+			</div>				
+			
+			<div class="form-group row mb-2" >
+				<label class="col-sm-4 col-form-label">Trạng thái</label>
+				<div class="col-sm-8">
+					<input type="checkbox" th:field="*{enabled}"/>
+				</div>
+			</div>
+			
+			<div class="form-group row mb-2" >
+				<label class="col-sm-4 col-form-label">Hình ảnh</label>
+				<div class="col-sm-8">
+					<input type="hidden" th:field="*{image}"/>
+					<input type="file" id="fileImage" class="mb-2" name="fileImage" accept="image/img, image/jpeg, image/png"/>
+					
+					<div class="mt-2">					
+						<img id="thumbnail" class="img-fluid" alt="ảnh loại sản phẩm"
+							th:src="@{/images/default-user.png}" />					
+					</div>
+					
+				</div>
+			</div>
+			
+			<div class="text-center m-3">
+				<input type="submit" value="Lưu" class="btn btn-primary"/>
+				<input type="button" value="Quay lại" class="btn btn-secondary" id="buttonCancel"/>
+			</div>
+		</div>
+	</form>
+	
+	<div class="modal fade text-center" id="modalDialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="modalTitle">Cảnh báo</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				
+				<div class="modal-body">
+					<span id="modalBody"></span>
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Đóng</button>
+				</div>
+			</div>
+		</div>
+	</div>	
+		
+	<div th:replace="fragments :: footer"></div>
+	
+	<script type="text/javascript">			
+		moduleURL = "[[@{/users}]]";		
+	</script>	
+	<script th:src="@{/js/common_form.js}"></script>
+</body>
+
+</html>

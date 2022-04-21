@@ -1,15 +1,21 @@
 package com.lizi.admin.category.controller;
 
+import java.io.IOException;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.lizi.admin.FileUploadUtil;
 import com.lizi.admin.category.CategoryNotFoundException;
 import com.lizi.admin.category.CategoryService;
 import com.lizi.admin.user.UserService;
@@ -24,7 +30,7 @@ public class CategoryController {
 	public String listFirstPage(Model model) {
 		return listByPage(1, model, "name", "asc", null);
 	}
-	
+			
 	@GetMapping("/categories/page/{pageNum}")
 	public String listByPage(			
 			@PathVariable(name = "pageNum") int pageNum, Model model,
@@ -64,6 +70,35 @@ public class CategoryController {
 		return "categories/categories";
 	}
 	
+	
+	@GetMapping("/categories/new")
+	public String newCategory(Model model) {	
+		List<Category> listCategories = service.listCategoriesUsedInForm();
+		Category category = new Category();
+		category.setEnabled(true);
+		model.addAttribute("category", category);
+		model.addAttribute("listCategories", listCategories);		
+		model.addAttribute("pageTitle", "Tạo loại sản phẩm");
+		return "categories/category_form";
+	}
+	
+	@PostMapping("/categories/save")
+	public String saveCategory(Category category, 
+			@RequestParam("fileImage") MultipartFile multipartFile,
+			RedirectAttributes redirectAttributes) throws IOException {	
+		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+		category.setImage(fileName);
+		
+		Category savedCategory = service.save(category);
+		
+		String uploadDir = "../category-images/" + savedCategory.getId();
+		FileUploadUtil.cleanDir(uploadDir);
+		FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+		
+		redirectAttributes.addFlashAttribute("message", "Loại sản phẩm được lưu thành công.");
+		
+		return "redirect:/categories";			
+	}
 	
 	@GetMapping("/categories/delete/{id}")
 	public String deleteCategory(@PathVariable(name = "id") Integer id, 

@@ -1,7 +1,9 @@
 package com.lizi.admin.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -24,12 +26,57 @@ public class CategoryService {
 	public List<Category> listAll(){			
 		return (List<Category>) categoryRepo.findAll();
 	}
+
+	public List<Category> listCategoriesUsedInForm() {
+		List<Category> categoriesInForm = new ArrayList<>();
+		
+		Iterable<Category> categoriesInDB = categoryRepo.findAll();
+		
+		for(Category category : categoriesInDB) {
+			if(category.getParent() == null) {				
+				categoriesInForm.add(Category.copyIdAndName(category));
+						
+				Set<Category> children = category.getChildren();
+				
+				for(Category subCategory : children) {
+					String nameCategory = "--" + subCategory.getName();
+					categoriesInForm.add(Category.copyIdAndName(subCategory.getId(), nameCategory));		
+					listChildren(categoriesInForm, subCategory, 1);
+				}
+				
+			}				
+		}		
+				
+		return categoriesInForm;
+	}
 	
-	public Category getCategoryByName(String name){			
+	private void listChildren(List<Category> categoriesInForm, Category parent, int subLevel) {
+		int newSubLevel = subLevel + 1;
+		Set<Category> children = parent.getChildren();
+		
+		for(Category subCategory : children) {
+			String name = "";
+			for(int i = 0; i < newSubLevel; i++) {
+				name += "--";
+			}	
+			
+			name += subCategory.getName();
+			
+			categoriesInForm.add(Category.copyIdAndName(subCategory.getId(), name));
+			
+			listChildren(categoriesInForm, subCategory, newSubLevel);			
+		}				
+	}
+	
+	public Category save(Category category) {
+		return categoryRepo.save(category);
+	}
+	
+	public Category getCategoryByName(String name) {			
 		return categoryRepo.getCategoryByName(name);
 	}
 	
-	public Page<Category> listByPage(int pageNumber, String sortField, String sortDir, String keyword){
+	public Page<Category> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
 		Sort sort = Sort.by(sortField);
 		
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
