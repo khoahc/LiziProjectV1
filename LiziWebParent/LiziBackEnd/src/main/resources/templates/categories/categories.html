@@ -16,7 +16,7 @@
 		[[${message}]]
 	</div>
 	
-	<form th:action="@{/users/page/1}" class="form-inline m-3 input-group m-50 w-50">
+	<form th:action="@{/categories/page/1}" class="form-inline m-3 input-group m-50 w-50">
 		<input type="hidden" name="sortField" th:value="${sortField}"/>
 		<input type="hidden" name="sortDir" th:value="${sortDir}"/>
 		
@@ -55,10 +55,11 @@
 				<tr th:each="category : ${listCategories}">										
 					<td class="hideable-column">[[${category.id}]]</td>
 					<td>
-						<img th:src="@{${category.image}}" style="width: 100px" class="img-fluid"/>
+						<img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid"/>
+						
 					</td>
-					<td class="hideable-column">[[${category.name}]]</td>
-					<td>[[${category.alias}]]</td>
+					<td>[[${category.name}]]</td>
+					<td class="hideable-column">[[${category.alias}]]</td>
 					
 					<td>
 						<div th:replace="fragments :: status(${category.enabled}, 'category', '/categories/' + ${category.id})" />
@@ -77,7 +78,7 @@
 	<div class="less-details">
 		<div th:each="category : ${listCategories}" class="row m-1">
 			<div class="col-4">
-				<img th:src="@{${category.image}}" style="width: 100px" class="img-fluid"/>
+				<img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid"/>
 			</div>
 			<div class="col-8">
 				<div>[[${category.name}]]</div>				
@@ -86,7 +87,7 @@
 					&nbsp; 			
 					<div th:replace="fragments :: edit('category', '/categories/edit/' + ${category.id})"></div>
 					&nbsp; 
-					<div th:replace="fragments :: delete('category', ${category.id}, '/users/delete/' + ${category.id}, true)"></div>
+					<div th:replace="fragments :: delete('category', ${category.id}, '/categories/delete/' + ${category.id}, true)"></div>
 				</div>
 			</div>
 			<div>&nbsp;</div>
@@ -125,7 +126,7 @@
 			$(".link-delete").on("click", function(e) {
 				e.preventDefault();
 				link = $(this);
-				userId = link.attr("categoryId");
+				categoryId = link.attr("categoryId");
 				$("#yesButton").attr("href", link.attr("href"));
 				$("#confirmText").text("Bạn có muốn xóa loại sản phẩm có ID: " + categoryId + " không?");
 				$("#confirmModal").modal('show');
@@ -133,7 +134,7 @@
 		});
 		
 		function clearFilter(){
-			window.location = "[[@{/users}]]";
+			window.location = "[[@{/categories}]]";
 		}
 	</script>
 	

@@ -24,9 +24,46 @@ public class CategoryService {
 	private CategoryRepository categoryRepo;				
 	
 	public List<Category> listAll(){			
-		return (List<Category>) categoryRepo.findAll();
+		List<Category> listRootCategories = categoryRepo.findRootCategories();
+		return listHierarchicalCategories(listRootCategories);
 	}
 
+	public List<Category> listHierarchicalCategories(List<Category> rootCategories){
+		List<Category> hierarchicalCategories = new ArrayList<>();
+		
+		for(Category rootCategory : rootCategories) {
+			hierarchicalCategories.add(Category.copyFull(rootCategory));
+			
+			Set<Category> children = rootCategory.getChildren();
+			
+			for(Category subCategory : children) {
+				String nameCategory = "--" + subCategory.getName();
+				hierarchicalCategories.add(Category.copyFull(subCategory, nameCategory));		
+				listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1);
+			}
+		}
+		return hierarchicalCategories;
+	}	
+	
+	public void listSubHierarchicalCategories(List<Category> hierarchicalCategories,
+			Category parent, int subLevel) {
+		int newSubLevel = subLevel + 1;
+		Set<Category> children = parent.getChildren();
+		
+		for(Category subCategory : children) {
+			String name = "";
+			for(int i = 0; i < newSubLevel; i++) {
+				name += "--";
+			}	
+			
+			name += subCategory.getName();
+			
+			hierarchicalCategories.add(Category.copyFull(subCategory, name));
+			
+			listSubCategoriesUsedInForm(hierarchicalCategories, subCategory, newSubLevel);			
+		}	
+	}
+	
 	public List<Category> listCategoriesUsedInForm() {
 		List<Category> categoriesInForm = new ArrayList<>();
 		
@@ -41,7 +78,7 @@ public class CategoryService {
 				for(Category subCategory : children) {
 					String nameCategory = "--" + subCategory.getName();
 					categoriesInForm.add(Category.copyIdAndName(subCategory.getId(), nameCategory));		
-					listChildren(categoriesInForm, subCategory, 1);
+					listSubCategoriesUsedInForm(categoriesInForm, subCategory, 1);
 				}
 				
 			}				
@@ -50,7 +87,7 @@ public class CategoryService {
 		return categoriesInForm;
 	}
 	
-	private void listChildren(List<Category> categoriesInForm, Category parent, int subLevel) {
+	private void listSubCategoriesUsedInForm(List<Category> categoriesInForm, Category parent, int subLevel) {
 		int newSubLevel = subLevel + 1;
 		Set<Category> children = parent.getChildren();
 		
@@ -64,7 +101,7 @@ public class CategoryService {
 			
 			categoriesInForm.add(Category.copyIdAndName(subCategory.getId(), name));
 			
-			listChildren(categoriesInForm, subCategory, newSubLevel);			
+			listSubCategoriesUsedInForm(categoriesInForm, subCategory, newSubLevel);			
 		}				
 	}
 	
@@ -89,9 +126,7 @@ public class CategoryService {
 		
 		return categoryRepo.findAll(pageable);
 	}	
-	
 		
-
 	public Category get(Integer id) throws CategoryNotFoundException {
 		try {
 			return categoryRepo.findById(id).get();			
