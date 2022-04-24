@@ -55,8 +55,7 @@
 				<tr th:each="category : ${listCategories}">										
 					<td class="hideable-column">[[${category.id}]]</td>
 					<td>
-						<img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid"/>
-						
+						<img th:src="@{${category.imagePath}}" style="width: 100px" class="img-fluid"/>						
 					</td>
 					<td>[[${category.name}]]</td>
 					<td class="hideable-column">[[${category.alias}]]</td>

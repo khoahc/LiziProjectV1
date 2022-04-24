@@ -2,8 +2,6 @@ package com.lizi.admin.category;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -17,8 +15,9 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
 	
 	public Long countById(Integer id);
 	
-	@Query("SELECT c FROM Category c WHERE CONCAT(c.id, ' ', c.name) LIKE %?1%")
-	public Page<Category> findAll(String keyword, Pageable pageable);
+	public Category findByName(String name);
+	
+	public Category findByAlias(String alias);
 	
 	@Modifying
 	@Query("UPDATE Category c SET c.enabled = ?2 WHERE c.id = ?1")	//id: 1, enabled: 2

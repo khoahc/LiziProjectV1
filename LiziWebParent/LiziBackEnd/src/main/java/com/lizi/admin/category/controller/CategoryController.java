@@ -17,10 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lizi.admin.FileUploadUtil;
 import com.lizi.admin.category.CategoryNotFoundException;
 import com.lizi.admin.category.CategoryService;
-import com.lizi.admin.user.UserNotFoundException;
 import com.lizi.common.entity.Category;
-import com.lizi.common.entity.Role;
-import com.lizi.common.entity.User;
 
 @Controller
 public class CategoryController {

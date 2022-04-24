@@ -88,4 +88,24 @@ public class CategoryRepositoryTests {
 			
 		}				
 	}
+	
+	@Test
+	public void testFindByName() {
+		String name = "Laptop";
+		Category category = repo.findByName(name);
+		
+		assertThat(category).isNotNull();
+		assertThat(category.getName()).isEqualTo(name);
+		
+	}
+	
+	@Test
+	public void testFindByAlias() {
+		String alias = "laptop";
+		Category category = repo.findByAlias(alias);
+		
+		assertThat(category).isNotNull();
+		assertThat(category.getAlias()).isEqualTo(alias);
+		
+	}
 }

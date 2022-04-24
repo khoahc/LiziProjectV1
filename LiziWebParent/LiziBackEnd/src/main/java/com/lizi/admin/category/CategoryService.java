@@ -113,19 +113,19 @@ public class CategoryService {
 		return categoryRepo.getCategoryByName(name);
 	}
 	
-	public Page<Category> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
-		Sort sort = Sort.by(sortField);
-		
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-		
-		Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
-		
-		if(keyword != null) {
-			return categoryRepo.findAll(keyword, pageable);
-		}
-		
-		return categoryRepo.findAll(pageable);
-	}	
+//	public Page<Category> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
+//		Sort sort = Sort.by(sortField);
+//		
+//		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+//		
+//		Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
+//		
+//		if(keyword != null) {
+//			return categoryRepo.findAll(keyword, pageable);
+//		}
+//		
+//		return categoryRepo.findAll(pageable);
+//	}	
 		
 	public Category get(Integer id) throws CategoryNotFoundException {
 		try {
@@ -148,5 +148,32 @@ public class CategoryService {
 	
 	public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
 		categoryRepo.updateEnabledStatus(id, enabled);
+	}
+	
+	public String checkUnique(Integer id, String name, String alias) {
+		boolean isCreatingNew = (id == null || id == 0);
+		
+		Category categoryByName = categoryRepo.findByName(name);
+		
+		if(isCreatingNew) {
+			if(categoryByName != null) {
+				return "DuplicateName";
+			} else {
+				Category categoryByAlias = categoryRepo.findByAlias(alias);
+				if(categoryByAlias != null) {
+					return "DuplicateAlias";
+				}
+			}
+		} else {
+			if(categoryByName != null && categoryByName.getId() != id) {
+				return "DuplicateName";
+			}
+			Category categoryByAlias = categoryRepo.findByAlias(alias);
+			if(categoryByAlias != null && categoryByAlias.getId() != id) {
+				return "DuplicateAlias";
+			}
+		}
+		
+		return "OK";
 	}
 }
