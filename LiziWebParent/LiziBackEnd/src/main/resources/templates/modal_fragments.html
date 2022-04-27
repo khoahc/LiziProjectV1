@@ -20,5 +20,26 @@
 			</div>
 		</div>
 	</div>	
+		
+	
+	<div th:fragment="confirm_modal" class="modal fade text-center" id="confirmModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="modalTitle">Xác nhận xóa</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				
+				<div class="modal-body">
+					<span id="confirmText"></span>
+				</div>
+				
+				<div class="modal-footer">
+					<a class="btn btn-success" href="" id="yesButton">Có</a>
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Không</button>
+				</div>
+			</div>
+		</div>
+	</div>	
 </body>
 </html>

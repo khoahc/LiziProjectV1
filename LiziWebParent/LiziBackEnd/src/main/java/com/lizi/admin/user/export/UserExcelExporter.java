@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lizi.admin.AbstractExporter;
 import com.lizi.common.entity.User;
 
 public class UserExcelExporter extends AbstractExporter{

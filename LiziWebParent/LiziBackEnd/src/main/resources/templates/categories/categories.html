@@ -1,52 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head('Loại sản phẩm - Lizi Admin')"/>
+<head th:replace="fragments :: page_head('Loại sản phẩm - Lizi Admin', 'none')"/>
 <body class="container-fluid">
 
 	<div th:replace="navigation :: menu"></div>
 
 	<div>
 		<h2>Quản lý loại sản phẩm</h2>
-		<a th:href="@{/categories/new}"> <i class="fa-solid fa-folder-plus fa-2x icon-dark"></i></a>
-		&nbsp;|&nbsp;
-		<a th:href="@{/categories/export/excel}"><i class="fa-solid fa-file-excel fa-2x icon-dark"></i></a>
-	</div>
-	
-	<div th:if="${message != null}" class="alert alert-success text-center">
-		[[${message}]]
-	</div>
-	
-	<form th:action="@{/categories/page/1}" class="form-inline m-3 input-group m-50 w-50">
-		<input type="hidden" name="sortField" th:value="${sortField}"/>
-		<input type="hidden" name="sortDir" th:value="${sortDir}"/>
 		
-		Tìm kiếm&nbsp;
-		<input type="search" name="keyword" th:value="${keyword}" class="form-control mx-3" required/>
-		<div class="input-group-append">
-			<button type="submit" class="btn btn-primary">
-				<i class="fa-solid fa-magnifying-glass"></i>
-			</button>
-			&nbsp;
-			<button type="button" class="btn btn-danger" onclick="clearFilter()">			
-				<i class="fa-solid fa-eraser"></i>
-			</button>		
-			&nbsp;
-		</div>
-	</form>
+		<a th:href="@{/categories/new}"> <i class="fa-solid fa-folder-plus fa-2x icon-dark"></i></a>
+			
+	</div>		
+	
+	<div th:replace="fragments :: search_form_and_message" />
 	
 	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover">
 			<thead class="table-dark">
 				<tr>									
 					<th class="hideable-column">
-						<th th:replace="fragments :: column_link('id', 'ID', 'tag')" />
+						<th th:replace="fragments :: column_link(${moduleURL}, 'id', 'ID', 'tag')" />
 					</th>					
 					<th>Hình ảnh</th>					
-					<th class="hideable-column">
-						<th th:replace="fragments :: column_link('name', 'Tên loại sản phẩm', 'tag')" />	
+					<th>
+						<th th:replace="fragments :: column_link(${moduleURL}, 'name', 'Tên loại sản phẩm', 'tag')" />	
 					</th>							
-					<th th:replace="fragments :: column_link('alias', 'Tên gọi tắt', 'none')" />
-					<th th:replace="fragments :: column_link('enabled', 'Trạng thái', 'none')" />
+					<th class="hideable-column">Tên gọi tắt</th>
+					<th th:replace="fragments :: column_link(${moduleURL}, 'enabled', 'Trạng thái', 'none')" />
 					<th></th>			
 				</tr>
 			</thead>
@@ -67,7 +47,7 @@
 					<td>
 						<div th:replace="fragments :: edit('category', '/categories/edit/' + ${category.id})" />
 						&nbsp;&nbsp;
-						<div th:replace="fragments :: delete('category', ${category.id}, '/categories/delete/' + ${category.id}, true)" />
+						<div th:replace="fragments :: delete('category', ${category.id}, '/categories/delete/' + ${category.id},  ${!category.hasChildren})" />
 					</td>
 				</tr>
 			</tbody>
@@ -86,56 +66,34 @@
 					&nbsp; 			
 					<div th:replace="fragments :: edit('category', '/categories/edit/' + ${category.id})"></div>
 					&nbsp; 
-					<div th:replace="fragments :: delete('category', ${category.id}, '/categories/delete/' + ${category.id}, true)"></div>
+					<div th:replace="fragments :: delete('category', ${category.id}, '/categories/delete/' + ${category.id}, ${!category.hasChildren})"></div>
 				</div>
 			</div>
 			<div>&nbsp;</div>
 		</div>
 	</div>
 	
-	<div th:replace="fragments :: pagination('categories')"></div>	
+	<th:block th:unless="${keyword != null}">
+		<div th:replace="fragments :: pagination(${moduleURL}, 'loại sản phẩm gốc')"></div>
+	</th>
 	
-	<div class="modal fade text-center" id="confirmModal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="modalTitle">Xác nhận xóa</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				
-				<div class="modal-body">
-					<span id="confirmText"></span>
-				</div>
-				
-				<div class="modal-footer">
-					<a class="btn btn-success" href="" id="yesButton">Có</a>
-					<button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Không</button>
-				</div>
-			</div>
-		</div>
-	</div>	
+	<div th:replace="modal_fragments :: confirm_modal" ></div>
 		
-	<div th:replace="fragments :: footer"></div>
-	
-	<script th:src="@{/js/common.js}"></script>
-	<script type="text/javascript">
-		moduleURL = "[[@{/categories}]]";
-		
-		$(document).ready(function(){
-			$(".link-delete").on("click", function(e) {
-				e.preventDefault();
-				link = $(this);
-				categoryId = link.attr("categoryId");
-				$("#yesButton").attr("href", link.attr("href"));
-				$("#confirmText").text("Bạn có muốn xóa loại sản phẩm có ID: " + categoryId + " không?");
-				$("#confirmModal").modal('show');
-			});
-		});
-		
-		function clearFilter(){
-			window.location = "[[@{/categories}]]";
-		}
-	</script>
+	<div th:replace="fragments :: footer"></div>		
 	
 </body>
+
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+	moduleURL = "[[@{/categories}]]";
+	
+	$(document).ready(function() {
+		$(".link-delete").on("click", function(e) {
+			e.preventDefault();
+			showDeleteConfirmModal($(this), 'category');
+		});
+	});
+	
+		
+</script>
 </html>

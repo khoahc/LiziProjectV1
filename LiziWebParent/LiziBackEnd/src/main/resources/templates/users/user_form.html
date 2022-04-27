@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments :: page_head(${pageTitle})"/>
+<head th:replace="fragments :: page_head(${pageTitle}, 'none')"/>
 <body class="container-fluid">
 
 	<div th:replace="navigation :: menu"></div>
@@ -118,7 +118,7 @@
 				if(response == "OK"){
 					form.submit();					
 				} else if (response == "Duplicated") {
-					showWarningModal("Email " + userEmail + " đã tồn tại");				
+					showWarningModal("Email " + userEmail + " đã tồn tại" + moduleURL);				
 				} else {
 					showErrorModal("Phản hồi không xác định từ máy chủ");
 				}

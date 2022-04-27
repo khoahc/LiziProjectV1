@@ -2,16 +2,16 @@ package com.lizi.admin.category;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 
 import com.lizi.common.entity.Category;
 
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Integer> {
-	@Query("SELECT c FROM Category c WHERE c.name = :name")
-	public Category getCategoryByName(@Param("name") String name);	
 	
 	public Long countById(Integer id);
 	
@@ -24,5 +24,11 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
 	public void updateEnabledStatus(Integer id, boolean enabled);
 	
 	@Query("SELECT c FROM Category c WHERE c.parent.id is NULL")
-	public List<Category> findRootCategories();
+	public List<Category> findRootCategories(Sort sort);
+	
+	@Query("SELECT c FROM Category c WHERE c.parent.id is NULL")
+	public Page<Category> findRootCategories(Pageable pageable);
+	
+	@Query("SELECT c FROM Category c WHERE c.name LIKE %?1%")
+	public Page<Category> search(String keyword, Pageable pageable);
 }

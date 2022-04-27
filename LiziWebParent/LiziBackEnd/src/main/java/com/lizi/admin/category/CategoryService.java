@@ -1,9 +1,12 @@
 package com.lizi.admin.category;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.transaction.Transactional;
 
@@ -19,36 +22,69 @@ import com.lizi.common.entity.Category;
 @Service
 @Transactional
 public class CategoryService {
-	public static final int USERS_PER_PAGE = 4;
+	public static final int ROOT_CATEGORIES_PER_PAGE = 1;
 	@Autowired
-	private CategoryRepository categoryRepo;				
+	private CategoryRepository categoryRepo;					
 	
-	public List<Category> listAll(){			
-		List<Category> listRootCategories = categoryRepo.findRootCategories();
-		return listHierarchicalCategories(listRootCategories);
-	}
+	public List<Category> listByPage(CategoryPageInfo pageInfo, int pageNum, String sortDir,
+			String keyword) {
+		Sort sort = Sort.by("name");
+		
+		if (sortDir.equals("asc")) {
+			sort = sort.ascending();
+		} else if (sortDir.equals("desc")) {
+			sort = sort.descending();
+		}
+		
+		Pageable pageable = PageRequest.of(pageNum - 1, ROOT_CATEGORIES_PER_PAGE, sort);
+		
+		Page<Category> pageCategories = null;
+		
+		if (keyword != null && !keyword.isEmpty()) {
+			pageCategories = categoryRepo.search(keyword, pageable);	
+		} else {
+			pageCategories = categoryRepo.findRootCategories(pageable);
+		}
+		
+		List<Category> rootCategories = pageCategories.getContent();
+		
+		pageInfo.setTotalElements(pageCategories.getTotalElements());
+		pageInfo.setTotalPages(pageCategories.getTotalPages());
+		
+		if (keyword != null && !keyword.isEmpty()) {
+			List<Category> searchResult = pageCategories.getContent();
+			for (Category category : searchResult) {
+				category.setHasChildren(category.getChildren().size() > 0);
+			}
+			
+			return searchResult;
+			
+		} else {
+			return listHierarchicalCategories(rootCategories, sortDir);
+		}
+	}		
 
-	public List<Category> listHierarchicalCategories(List<Category> rootCategories){
+	public List<Category> listHierarchicalCategories(List<Category> rootCategories, String sortDir){
 		List<Category> hierarchicalCategories = new ArrayList<>();
 		
 		for(Category rootCategory : rootCategories) {
 			hierarchicalCategories.add(Category.copyFull(rootCategory));
 			
-			Set<Category> children = rootCategory.getChildren();
+			Set<Category> children = sortSubCategories(rootCategory.getChildren(), sortDir);
 			
 			for(Category subCategory : children) {
 				String nameCategory = "--" + subCategory.getName();
 				hierarchicalCategories.add(Category.copyFull(subCategory, nameCategory));		
-				listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1);
+				listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1, sortDir);
 			}
 		}
 		return hierarchicalCategories;
 	}	
 	
 	public void listSubHierarchicalCategories(List<Category> hierarchicalCategories,
-			Category parent, int subLevel) {
+			Category parent, int subLevel, String sortDir) {
 		int newSubLevel = subLevel + 1;
-		Set<Category> children = parent.getChildren();
+		Set<Category> children = sortSubCategories(parent.getChildren(), sortDir);
 		
 		for(Category subCategory : children) {
 			String name = "";
@@ -60,20 +96,20 @@ public class CategoryService {
 			
 			hierarchicalCategories.add(Category.copyFull(subCategory, name));
 			
-			listSubCategoriesUsedInForm(hierarchicalCategories, subCategory, newSubLevel);			
+			listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel, sortDir);	
 		}	
 	}
 	
 	public List<Category> listCategoriesUsedInForm() {
 		List<Category> categoriesInForm = new ArrayList<>();
 		
-		Iterable<Category> categoriesInDB = categoryRepo.findAll();
+		Iterable<Category> categoriesInDB = categoryRepo.findRootCategories(Sort.by("name").ascending());
 		
 		for(Category category : categoriesInDB) {
 			if(category.getParent() == null) {				
 				categoriesInForm.add(Category.copyIdAndName(category));
 						
-				Set<Category> children = category.getChildren();
+				Set<Category> children = sortSubCategories(category.getChildren());
 				
 				for(Category subCategory : children) {
 					String nameCategory = "--" + subCategory.getName();
@@ -89,7 +125,7 @@ public class CategoryService {
 	
 	private void listSubCategoriesUsedInForm(List<Category> categoriesInForm, Category parent, int subLevel) {
 		int newSubLevel = subLevel + 1;
-		Set<Category> children = parent.getChildren();
+		Set<Category> children = sortSubCategories(parent.getChildren());
 		
 		for(Category subCategory : children) {
 			String name = "";
@@ -108,25 +144,7 @@ public class CategoryService {
 	public Category save(Category category) {
 		return categoryRepo.save(category);
 	}
-	
-	public Category getCategoryByName(String name) {			
-		return categoryRepo.getCategoryByName(name);
-	}
-	
-//	public Page<Category> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
-//		Sort sort = Sort.by(sortField);
-//		
-//		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-//		
-//		Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
-//		
-//		if(keyword != null) {
-//			return categoryRepo.findAll(keyword, pageable);
-//		}
-//		
-//		return categoryRepo.findAll(pageable);
-//	}	
-		
+
 	public Category get(Integer id) throws CategoryNotFoundException {
 		try {
 			return categoryRepo.findById(id).get();			
@@ -176,4 +194,26 @@ public class CategoryService {
 		
 		return "OK";
 	}
+	
+	private SortedSet<Category> sortSubCategories(Set<Category> children) {
+		return sortSubCategories(children, "asc");
+	}
+	
+	private SortedSet<Category> sortSubCategories(Set<Category> children, String sortDir) {
+		SortedSet<Category> sortedChildren = new TreeSet<>(new Comparator<Category>() {
+			@Override
+			public int compare(Category cat1, Category cat2) {
+				if (sortDir.equals("asc")) {
+					return cat1.getName().compareTo(cat2.getName());
+				} else {
+					return cat2.getName().compareTo(cat1.getName());
+				}
+			}
+		});
+		
+		sortedChildren.addAll(children);
+		
+		return sortedChildren;
+	}
+	
 }
