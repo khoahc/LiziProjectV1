@@ -15,7 +15,7 @@ import com.lizi.common.entity.Brand;
 
 @Service
 public class BrandService {
-	public static final int BRANDS_PER_PAGE = 2;
+	public static final int BRANDS_PER_PAGE = 10;
 	
 	@Autowired
 	private BrandRepository repo;

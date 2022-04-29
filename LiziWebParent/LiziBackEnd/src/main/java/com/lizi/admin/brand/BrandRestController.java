@@ -23,22 +23,22 @@ public class BrandRestController {
 		return service.checkUnique(id, name);
 	}
 	
-//	@GetMapping("/brands/{id}/categories")
-//	public List<CategoryDTO> listCategoriesByBrand(@PathVariable(name = "id") Integer brandId) throws BrandNotFoundRestException {
-//		List<CategoryDTO> listCategories = new ArrayList<>(); 
-//		
-//		try {
-//			Brand brand = service.get(brandId);
-//			Set<Category> categories = brand.getCategories();
-//			
-//			for (Category category : categories) {
-//				CategoryDTO dto = new CategoryDTO(category.getId(), category.getName());
-//				listCategories.add(dto);
-//			}
-//			
-//			return listCategories;
-//		} catch (BrandNotFoundException e) {
-//			throw new BrandNotFoundRestException();
-//		}
-//	}
+	@GetMapping("/brands/{id}/categories")
+	public List<CategoryDTO> listCategoriesByBrand(@PathVariable(name = "id") Integer brandId) throws BrandNotFoundRestException {
+		List<CategoryDTO> listCategories = new ArrayList<>(); 
+		
+		try {
+			Brand brand = service.get(brandId);
+			Set<Category> categories = brand.getCategories();
+			
+			for (Category category : categories) {
+				CategoryDTO dto = new CategoryDTO(category.getId(), category.getName());
+				listCategories.add(dto);
+			}
+			
+			return listCategories;
+		} catch (BrandNotFoundException e) {
+			throw new BrandNotFoundRestException();
+		}
+	}
 }
