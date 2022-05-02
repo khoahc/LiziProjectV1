@@ -82,7 +82,9 @@
 	<div th:replace="fragments :: footer"></div>
 	
 	<script type="text/javascript">			
-		moduleURL = "[[@{/categories}]]";		
+		moduleURL = "[[@{/categories}]]";	
+		MAX_FILE_SIZE = 102400; // 100KB
+		
 		function checkUnique(form){
 			catId = $("#id").val();
 			catName = $("#name").val();

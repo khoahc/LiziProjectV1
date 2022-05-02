@@ -105,8 +105,10 @@
 		
 	<div th:replace="fragments :: footer"></div>
 	
-	<script type="text/javascript">			
+	<script type="text/javascript">		
+		MAX_FILE_SIZE = 102400; // 100KB
 		moduleURL = "[[@{/users}]]";
+		
 		function checkEmailUnique(form){
 			url = "[[@{/users/check-email}]]";
 			userEmail = $("#email").val();
