@@ -14,21 +14,23 @@ import com.lizi.common.entity.User;
 
 public class LiziUserDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
-	private User user;		
-
-	LiziUserDetails(User user) {
+	private User user;
+	
+	
+	public LiziUserDetails(User user) {
 		this.user = user;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<Role> roles = user.getRoles();
+		
 		List<SimpleGrantedAuthority> authories = new ArrayList<>();
 		
 		for (Role role : roles) {
 			authories.add(new SimpleGrantedAuthority(role.getName()));
 		}
-				
+		
 		return authories;
 	}
 
@@ -38,17 +40,17 @@ public class LiziUserDetails implements UserDetails {
 	}
 
 	@Override
-	public String getUsername() {		
+	public String getUsername() {
 		return user.getEmail();
 	}
 
 	@Override
-	public boolean isAccountNonExpired() {		
+	public boolean isAccountNonExpired() {
 		return true;
 	}
 
 	@Override
-	public boolean isAccountNonLocked() {		
+	public boolean isAccountNonLocked() {
 		return true;
 	}
 
@@ -63,14 +65,18 @@ public class LiziUserDetails implements UserDetails {
 	}
 	
 	public String getFullname() {
-		return this.user.getFullName();
+		return this.user.getFirstName() + " " + this.user.getLastName();
 	}
 	
 	public void setFirstName(String firstName) {
 		this.user.setFirstName(firstName);
 	}
-	
+
 	public void setLastName(String lastName) {
 		this.user.setLastName(lastName);
+	}	
+	
+	public boolean hasRole(String roleName) {
+		return user.hasRole(roleName);
 	}
 }

@@ -15,10 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lizi.admin.FileUploadUtil;
-import com.lizi.admin.category.CategoryNotFoundException;
 import com.lizi.admin.category.CategoryPageInfo;
 import com.lizi.admin.category.CategoryService;
 import com.lizi.common.entity.Category;
+import com.lizi.common.exception.CategoryNotFoundException;
 
 @Controller
 public class CategoryController {
