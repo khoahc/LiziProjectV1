@@ -1,0 +1,12 @@
+package com.lizi.admin.setting;
+
+import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
+
+import com.lizi.common.entity.Setting;
+import com.lizi.common.entity.SettingCategory;
+
+public interface SettingRepository extends CrudRepository<Setting, String> {
+	public List<Setting> findByCategory(SettingCategory category);
+}
