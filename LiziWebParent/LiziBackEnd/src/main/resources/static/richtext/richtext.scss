@@ -65,7 +65,14 @@ $highlight: #3498db;
     }
 
     .richText-toolbar {
+<<<<<<< HEAD
         min-height: 20px;
+=======
+        position: sticky;
+        top: 0;
+        min-height: 20px;
+        background-color: inherit;
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
         border-bottom: #EFEFEF solid 1px;
 
         .richText-length {
@@ -245,6 +252,16 @@ $highlight: #3498db;
         overflow-y: scroll;
         overflow-x: auto;
 
+<<<<<<< HEAD
+=======
+        &[placeholder] {
+            &:before {
+                content: attr(placeholder);
+                color: #555;
+            }
+        }
+
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
         ul, ol {
             margin: 10px 25px;
         }

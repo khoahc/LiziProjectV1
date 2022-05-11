@@ -13,7 +13,7 @@
 		<a th:href="@{/users/export/excel}"><i class="fa-solid fa-file-excel fa-2x icon-dark"></i></a>
 	</div>
 	
-	<div th:replace="fragments :: search_form_and_message" />
+	<div th:replace="fragments :: search_form_and_message('/users')" />
 			
 	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover">

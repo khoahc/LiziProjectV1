@@ -159,10 +159,23 @@
             // privacy
             youtubeCookies: false,
 
+<<<<<<< HEAD
+=======
+            // preview
+            preview: false,
+
+            // placeholder
+            placeholder: '',
+
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
             // dev settings
             useSingleQuotes: false,
             height: 0,
             heightPercentage: 0,
+<<<<<<< HEAD
+=======
+            adaptiveHeight: false,
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
             id: "",
             class: "",
             useParagraph: false,
@@ -306,7 +319,11 @@
             $formInput = $('<input />', {type: "text"}), //form input field
             $formInputFile = $('<input />', {type: "file"}), // form file input field
             $formInputSelect = $('<select />'),
+<<<<<<< HEAD
             $formButton = $('<button />', {text: settings.translations.add, class: "btn"}); // button
+=======
+            $formButton = $('<button />', {text: settings.translations.add, class: "btn", type: "button"}); // button
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
 
         /* internal settings */
         var savedSelection; // caret position/selection
@@ -532,12 +549,40 @@
 
             $editor = $('<div />', {class: "richText"});
             var $toolbar = $('<div />', {class: "richText-toolbar"});
+<<<<<<< HEAD
             var $editorView = $('<div />', {class: "richText-editor", id: editorID, contenteditable: true});
+=======
+            var $editorView = $('<div />', {class: "richText-editor", id: editorID, contenteditable: !settings.preview});
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
             var tabindex = $inputElement.prop('tabindex');
             if (tabindex >= 0 && settings.useTabForNext === true) {
                 $editorView.attr('tabindex', tabindex);
             }
+<<<<<<< HEAD
             $toolbar.append($toolbarList);
+=======
+            if (!settings.preview) {
+                $toolbar.append($toolbarList);
+            }
+            if (settings.placeholder) {
+                if (!$editorView.text().length) {
+                    $editorView.attr('placeholder', settings.placeholder);
+                    $editorView.on('focus', function () {
+                        $editorView.removeAttr('placeholder');
+                    });
+                    $editorView.on('focusout blur', function () {
+                        if (this.hasAttribute('placeholder')) {
+                            return;
+                        }
+                        if ($(this).text().length) {
+                            return;
+                        }
+                        $(this).attr('placeholder', settings.placeholder);
+                    });
+                }
+            }
+
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
             settings.$editor = $editor;
 
             /* text formatting */
@@ -630,6 +675,7 @@
             $inputElement.replaceWith($editor);
 
             // append bottom toolbar
+<<<<<<< HEAD
             $editor.append(
                 $('<div />', {class: 'richText-toolbar'})
                     .append($('<a />', {
@@ -644,6 +690,23 @@
                     }))
                     .append($('<a />', {class: 'richText-help', html: '<span class="fa fa-question-circle"></span>'}))
             );
+=======
+            $bottomToolbar = $('<div />', {class: 'richText-toolbar'});
+            if (!settings.preview) {
+                $bottomToolbar.append($('<a />', {
+                    class: 'richText-undo is-disabled',
+                    html: '<span class="fa fa-undo"></span>',
+                    'title': settings.translations.undo
+                }));
+                $bottomToolbar.append($('<a />', {
+                    class: 'richText-redo is-disabled',
+                    html: '<span class="fa fa-repeat fa-redo"></span>',
+                    'title': settings.translations.redo
+                }));
+            }
+            $bottomToolbar.append($('<a />', {class: 'richText-help', html: '<span class="fa fa-question-circle"></span>'}));
+            $editor.append($bottomToolbar);
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
 
             if (settings.maxlength > 0) {
                 // display max length in editor toolbar
@@ -658,7 +721,11 @@
                 // set custom editor height
                 $editor.children(".richText-editor, .richText-initial").css({
                     'min-height': settings.height + 'px',
+<<<<<<< HEAD
                     'height': settings.height + 'px'
+=======
+                    'height': settings.adaptiveHeight ? 'auto' : settings.height + 'px'
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
                 });
             } else if (settings.heightPercentage && settings.heightPercentage > 0) {
                 // set custom editor height in percentage
@@ -671,7 +738,15 @@
                 height -= parseInt($editor.find(".richText-editor").css("padding-bottom")); // remove paddings
                 $editor.children(".richText-editor, .richText-initial").css({
                     'min-height': height + 'px',
+<<<<<<< HEAD
                     'height': height + 'px'
+=======
+                    'height': settings.adaptiveHeight ? 'auto' : height + 'px'
+                });
+            } else if (settings.adaptiveHeight) {
+                $editor.children(".richText-editor, .richText-initial").css({
+                    'height': 'auto'
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
                 });
             }
 
@@ -1415,6 +1490,11 @@
                     'editorID': editorID,
                     'anchor': $('#' + editorID).children('div')[0]
                 };
+<<<<<<< HEAD
+=======
+            } else if (!savedSel.editorID && editorID) {
+                savedSel.editorID = editorID;
+>>>>>>> 447530fc07009336ff00b130078924d5cde7828c
             }
 
             if (savedSel.editorID !== editorID) {
