@@ -22,6 +22,7 @@ import com.lizi.common.entity.Setting;
 
 @Controller
 public class SettingController {
+
 	@Autowired private SettingService service;
 	
 	@Autowired private CurrencyRepository currencyRepo;
@@ -41,15 +42,18 @@ public class SettingController {
 	}
 	
 	@PostMapping("/settings/save_general")
-	public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipartFile, 
+
+	public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipartFile,
 			HttpServletRequest request, RedirectAttributes ra) throws IOException {
 		GeneralSettingBag settingBag = service.getGeneralSettings();
 		
 		saveSiteLogo(multipartFile, settingBag);
 		saveCurrencySymbol(request, settingBag);
-		updateSettingValuesForm(request, settingBag.list());
+
+		updateSettingValuesFromForm(request, settingBag.list());
 		
-		ra.addFlashAttribute("message", "General settings have been saved");
+		ra.addFlashAttribute("message", "General settings have been saved.");
+		
 		return "redirect:/settings";
 	}
 
@@ -59,7 +63,7 @@ public class SettingController {
 			String value = "/site-logo/" + fileName;
 			settingBag.updateSiteLogo(value);
 			
-			String uploadDir = "../site-logo";
+			String uploadDir = "../site-logo/";
 			FileUploadUtil.cleanDir(uploadDir);
 			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		}
@@ -75,7 +79,8 @@ public class SettingController {
 		}
 	}
 	
-	private void updateSettingValuesForm(HttpServletRequest request, List<Setting> listSettings) {
+
+	private void updateSettingValuesFromForm(HttpServletRequest request, List<Setting> listSettings) {
 		for (Setting setting : listSettings) {
 			String value = request.getParameter(setting.getKey());
 			if (value != null) {

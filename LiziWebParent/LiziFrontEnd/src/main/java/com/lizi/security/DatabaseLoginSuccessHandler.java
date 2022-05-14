@@ -1,4 +1,4 @@
-package com.shopme.security;
+package com.lizi.security;
 
 import java.io.IOException;
 
@@ -11,9 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.shopme.common.entity.AuthenticationType;
-import com.shopme.common.entity.Customer;
-import com.shopme.customer.CustomerService;
+import com.lizi.common.entity.AuthenticationType;
+import com.lizi.common.entity.Customer;
+import com.lizi.customer.CustomerService;
 
 @Component
 public class DatabaseLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {

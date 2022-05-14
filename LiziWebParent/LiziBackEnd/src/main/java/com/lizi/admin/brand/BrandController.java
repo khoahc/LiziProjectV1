@@ -18,8 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lizi.admin.FileUploadUtil;
 import com.lizi.admin.category.CategoryService;
-import com.lizi.admin.paging.PagingAndSortingHelper;
-import com.lizi.admin.paging.PagingAndSortingParam;
 import com.lizi.common.entity.Brand;
 import com.lizi.common.entity.Category;
 
@@ -128,8 +126,7 @@ public class BrandController {
 			RedirectAttributes redirectAttributes) {
 		try {
 			brandService.delete(id);
-			String brandDir = "brand-logos/" + id;
-//			AmazonS3Util.removeFolder(brandDir);
+	//		String brandDir = "brand-logos/" + id;
 			
 			redirectAttributes.addFlashAttribute("message", 
 					"Nhãn hàng ID " + id + " đã được xóa thành công");

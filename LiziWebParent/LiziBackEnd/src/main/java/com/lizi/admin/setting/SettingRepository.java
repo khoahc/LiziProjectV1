@@ -1,4 +1,4 @@
- package com.lizi.admin.setting;
+package com.lizi.admin.setting;
 
 import java.util.List;
 

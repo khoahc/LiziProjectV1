@@ -7,11 +7,10 @@ import com.lizi.common.entity.SettingBag;
 
 public class GeneralSettingBag extends SettingBag {
 
-	public GeneralSettingBag(List<Setting> listSetting) {
-		super(listSetting);
-		// TODO Auto-generated constructor stub
+	public GeneralSettingBag(List<Setting> listSettings) {
+		super(listSettings);
 	}
-	
+
 	public void updateCurrencySymbol(String value) {
 		super.update("CURRENCY_SYMBOL", value);
 	}

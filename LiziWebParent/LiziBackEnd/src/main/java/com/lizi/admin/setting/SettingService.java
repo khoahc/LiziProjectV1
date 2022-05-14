@@ -20,11 +20,11 @@ public class SettingService {
 	public GeneralSettingBag getGeneralSettings() {
 		List<Setting> settings = new ArrayList<>();
 		
-		List<Setting> generalSetting = repo.findByCategory(SettingCategory.GENERAL);
-		List<Setting> currencySetting = repo.findByCategory(SettingCategory.CURRENCY);
+		List<Setting> generalSettings = repo.findByCategory(SettingCategory.GENERAL);
+		List<Setting> currencySettings = repo.findByCategory(SettingCategory.CURRENCY);
 		
-		settings.addAll(generalSetting);
-		settings.addAll(currencySetting);
+		settings.addAll(generalSettings);
+		settings.addAll(currencySettings);
 		
 		return new GeneralSettingBag(settings);
 	}

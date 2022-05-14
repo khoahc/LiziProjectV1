@@ -23,11 +23,12 @@ public class SettingRepositoryTests {
 	
 	@Test
 	public void testCreateGeneralSettings() {
-//		Setting siteName = new Setting("SITE_NAME", "Lizi", SettingCategory.GENERAL);
+
+		Setting siteName = new Setting("SITE_NAME", "Lizi", SettingCategory.GENERAL);
 		Setting siteLogo = new Setting("SITE_LOGO", "lizi-logo.png", SettingCategory.GENERAL);
-		Setting copyright = new Setting("COPYRIGHT", "Lizi (C) 2022 Lizi Ltd.", SettingCategory.GENERAL);
+		Setting copyright = new Setting("COPYRIGHT", "Copyright (C) 2021 Lizi Ltd.", SettingCategory.GENERAL);
 		
-		repo.saveAll(List.of(siteLogo, copyright));
+		repo.saveAll(List.of(siteName, siteLogo, copyright));
 		
 		Iterable<Setting> iterable = repo.findAll();
 		
@@ -37,17 +38,20 @@ public class SettingRepositoryTests {
 	@Test
 	public void testCreateCurrencySettings() {
 		Setting currencyId = new Setting("CURRENCY_ID", "1", SettingCategory.CURRENCY);
-		Setting symbol = new Setting("CURRENCY_SYMBOL", "đ", SettingCategory.CURRENCY);
-		Setting symbolPosition = new Setting("CURRENCY_SYMBOL_POSITION", "after", SettingCategory.CURRENCY);
+
+		Setting symbol = new Setting("CURRENCY_SYMBOL", "$", SettingCategory.CURRENCY);
+		Setting symbolPosition = new Setting("CURRENCY_SYMBOL_POSITION", "before", SettingCategory.CURRENCY);
 		Setting decimalPointType = new Setting("DECIMAL_POINT_TYPE", "POINT", SettingCategory.CURRENCY);
 		Setting decimalDigits = new Setting("DECIMAL_DIGITS", "2", SettingCategory.CURRENCY);
 		Setting thousandsPointType = new Setting("THOUSANDS_POINT_TYPE", "COMMA", SettingCategory.CURRENCY);
 		
-		repo.saveAll(List.of(currencyId, symbol, symbolPosition, decimalPointType, decimalDigits, thousandsPointType));
+		repo.saveAll(List.of(currencyId, symbol, symbolPosition, decimalPointType, 
+				decimalDigits, thousandsPointType));
+		
 	}
 	
 	@Test
-	public void testListSettingCategory() {
+	public void testListSettingsByCategory() {
 		List<Setting> settings = repo.findByCategory(SettingCategory.GENERAL);
 		
 		settings.forEach(System.out::println);

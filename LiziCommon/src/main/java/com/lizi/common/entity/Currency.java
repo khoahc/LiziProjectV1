@@ -19,15 +19,16 @@ public class Currency {
 	
 	@Column(nullable = false, length = 3)
 	private String symbol;
-
+	
 	@Column(nullable = false, length = 4)
 	private String code;
-	
+
 	public Currency() {
 		
 	}
-
+	
 	public Currency(String name, String symbol, String code) {
+		super();
 		this.name = name;
 		this.symbol = symbol;
 		this.code = code;

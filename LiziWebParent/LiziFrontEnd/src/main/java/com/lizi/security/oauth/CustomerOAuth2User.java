@@ -1,4 +1,4 @@
-package com.shopme.security.oauth;
+package com.lizi.security.oauth;
 
 import java.util.Collection;
 import java.util.Map;

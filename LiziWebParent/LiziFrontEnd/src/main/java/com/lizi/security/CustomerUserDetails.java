@@ -1,13 +1,16 @@
-package com.shopme.security;
+package com.lizi.security;
 
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.shopme.common.entity.Customer;
+import com.lizi.common.entity.Customer;
 
 public class CustomerUserDetails implements UserDetails {
+	
+	private static final long serialVersionUID = 1L;
+	
 	private Customer customer;
 	
 	public CustomerUserDetails(Customer customer) {
